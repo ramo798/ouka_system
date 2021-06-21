@@ -1,2 +1,4 @@
 *.csv
 db/mysql_data/*
+venv
+memo.txt

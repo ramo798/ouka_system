@@ -2,7 +2,7 @@ use my_database;
 
 CREATE TABLE kaouisan (
     id INT(10) AUTO_INCREMENT NOT NULL,
-    control_number int(8),
+    control_number VARCHAR(20),
     era_name VARCHAR(10),
     japanese_calendar VARCHAR(16),
     western_calendar int(12),

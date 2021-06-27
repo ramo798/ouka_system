@@ -2,3 +2,4 @@
 db/mysql_data/*
 venv
 memo.txt
+node_modules

@@ -21,5 +21,5 @@ func main() {
 	r.GET("/all", handler.Getall)
 	r.GET("/serch", handler.Getserch)
 
-	r.Run()
+	r.Run(":8070")
 }

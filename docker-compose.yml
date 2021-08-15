@@ -23,5 +23,16 @@ services:
     volumes:
       - ./goapi:/go/src/work
     ports:
-      - 8090:8080
+      - 8070:8070
     restart: always
+
+  nuxt:
+    build: front_kaou/.
+    ports:
+      - 3000:3000
+    volumes:
+      - ./front_kaou:/app
+      - /app/node_modules
+    tty: true
+    working_dir: /app
+    command: npm run dev

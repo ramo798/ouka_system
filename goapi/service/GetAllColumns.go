@@ -11,7 +11,7 @@ func GetAllColumns() []model.Kaouisan {
 
 	var all []model.Kaouisan
 
-	db.Find(&all).Limit(30)
+	db.Limit(30).Find(&all).Limit(30)
 
 	for i := 0; i < len(all); i++ {
 		fmt.Println(all[i])

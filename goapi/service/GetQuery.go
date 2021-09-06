@@ -11,11 +11,11 @@ func GetQuery(text string, subject string, sort string) []model.Kaouisan {
 	var res []model.Kaouisan
 
 	if subject == "person" {
-		db.Where("persons_name = ?", text).Order("calendar").Find(&res)
+		db.Where("persons_name like ?", "%"+text+"%").Order("calendar").Find(&res)
 	} else if subject == "document" {
-		db.Where("document_name = ?", text).Order("calendar").Find(&res)
+		db.Where("document_name like ?", "%"+text+"%").Order("calendar").Find(&res)
 	} else if subject == "era" {
-		db.Where("era_name = ?", text).Order("calendar").Find(&res)
+		db.Where("era_name like ?", "%"+text+"%").Order("calendar").Find(&res)
 	}
 
 	return res

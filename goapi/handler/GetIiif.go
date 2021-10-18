@@ -2,12 +2,19 @@ package handler
 
 import (
 	"goapi/model"
+	"goapi/service"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetIiif(c *gin.Context) {
 	// var res model.Manifest
+	text := c.Query("text")
+	subject := c.DefaultQuery("subject", "person")
+	sort := c.DefaultQuery("sort", "ASC")
+	data := service.GetQuery(text, subject, sort)
+
 	ReratedIn := []model.RelatedIn{
 		{
 			ID:     "http://codh.rois.ac.jp/pmjt/book/200017283/",
@@ -34,40 +41,50 @@ func GetIiif(c *gin.Context) {
 		},
 	}
 
-	SequencesIn := []model.SequencesIn{
-		{
-			Canvases: []model.CanvasesIn{
+	var canvaseList []model.CanvasesIn
+
+	for _, i := range data {
+		var wi int
+		wi, _ = strconv.Atoi(i.Width)
+		var he int
+		he, _ = strconv.Atoi(i.Height)
+
+		canvase := model.CanvasesIn{
+			Type:   "sc:Canvas",
+			Label:  i.Persons_name + "_" + i.Historical_materials,
+			Width:  wi,
+			Height: he,
+			ID:     "http://codh.rois.ac.jp/pmjt/iiif/200017283/canvas/00001",
+			Images: []model.CanvasesImagesIn{
 				{
-					Type:   "sc:Canvas",
-					Label:  "Page 1",
-					Width:  5760,
-					Height: 3840,
-					ID:     "http://codh.rois.ac.jp/pmjt/iiif/200017283/canvas/00001",
-					Images: []model.CanvasesImagesIn{
-						{
-							ID:         "http://codh.rois.ac.jp/pmjt/iiif/200017283/annotation/00001",
-							Motivation: "sc:painting",
-							Resource: model.CanvasesImagesResourceIn{
-								ID:     "http://codh.rois.ac.jp/pmjt/iiif/200017283/200017283_00001.tif/full/full/0/default.jpg",
-								Format: "image/jpeg",
-								Type:   "dctypes:Image",
-								Height: 3840,
-								Service: model.CanvasesImagesResourceServiceIn{
-									ID:      "http://codh.rois.ac.jp/pmjt/iiif/200017283/200017283_00001.tif",
-									Context: "http://iiif.io/api/image/2/context.json",
-									Profile: "http://iiif.io/api/image/2/level2.json",
-								},
-								Width: 5760,
-							},
-							Type: "oa:Annotation",
-							On:   "http://codh.rois.ac.jp/pmjt/iiif/200017283/canvas/00001",
+					ID:         "http://hoge.ac.jp/" + i.Pic_path,
+					Motivation: "sc:painting",
+					Resource: model.CanvasesImagesResourceIn{
+						ID:     "http://hoge.ac.jp/" + i.Pic_path,
+						Format: "image/bmp",
+						Type:   "oa:Annotation",
+						Height: he,
+						Service: model.CanvasesImagesResourceServiceIn{
+							ID:      "http://codh.rois.ac.jp/pmjt/iiif/200017283/200017283_00002.tif",
+							Context: "http://iiif.io/api/image/2/context.json",
+							Profile: "http://iiif.io/api/image/2/level2.json",
 						},
+						Width: wi,
 					},
+					Type: "oa:Annotation",
+					On:   "http://hoge.ac.jp/" + i.Pic_path,
 				},
 			},
-			ID:    "http://codh.rois.ac.jp/pmjt/iiif/200017283/sequence/all",
-			Type:  "sc:Sequence",
-			Label: "ページ一覧",
+		}
+		canvaseList = append(canvaseList, canvase)
+
+	}
+	SequencesIn := []model.SequencesIn{
+		{
+			Canvases: canvaseList,
+			ID:       "http://codh.rois.ac.jp/pmjt/iiif/200017283/sequence/all",
+			Type:     "sc:Sequence",
+			Label:    "ページ一覧",
 		},
 	}
 

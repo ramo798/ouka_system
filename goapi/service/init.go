@@ -9,8 +9,8 @@ func GormConnect() *gorm.DB {
 	DBMS := "mysql"
 	USER := "root"
 	PASS := "root"
-	PROTOCOL := "tcp(localhost:3307)"
-	// PROTOCOL := "tcp(mysql:3306)"
+	// PROTOCOL := "tcp(localhost:3307)"
+	PROTOCOL := "tcp(mysql:3306)"
 	DBNAME := "my_database"
 	CONNECT := USER + ":" + PASS + "@" + PROTOCOL + "/" + DBNAME + "?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
 

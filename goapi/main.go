@@ -24,5 +24,5 @@ func main() {
 	r.GET("/serch", handler.Getserch)
 	r.GET("/api", handler.GetIiif)
 
-	r.Run(":8060")
+	r.Run(":8070")
 }

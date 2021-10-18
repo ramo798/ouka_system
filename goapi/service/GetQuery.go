@@ -5,7 +5,7 @@ import (
 )
 
 func GetQuery(text string, subject string, sort string) []model.Kaouisan {
-	db := gormConnect()
+	db := GormConnect()
 	defer db.Close()
 
 	var res []model.Kaouisan

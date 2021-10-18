@@ -6,7 +6,7 @@ import (
 )
 
 func GetAllColumns() []model.Kaouisan {
-	db := gormConnect()
+	db := GormConnect()
 	defer db.Close()
 
 	var all []model.Kaouisan

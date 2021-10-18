@@ -1,6 +1,8 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 type Kaouisan struct {
 	Id                   string
@@ -15,6 +17,8 @@ type Kaouisan struct {
 	Position_name        string
 	Pic_no               string
 	Pic_path             string
+	Width                string
+	Height               string
 }
 
 // CREATE TABLE kaouisan (

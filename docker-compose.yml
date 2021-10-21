@@ -25,6 +25,8 @@ services:
     ports:
       - 8070:8070
     restart: always
+    environment:
+      - BASE_URL=http://localhost:4455
 
   nuxt:
     build: front_kaou/.

@@ -3,7 +3,10 @@ package handler
 import (
 	"goapi/model"
 	"goapi/service"
+	"net/url"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,25 +18,22 @@ func GetIiif(c *gin.Context) {
 	sort := c.DefaultQuery("sort", "ASC")
 	data := service.GetQuery(text, subject, sort)
 
+	// baseUrl := "http://localhost:4455"
+	baseUrl := os.Getenv("BASE_URL")
+
+	textEncoded := url.QueryEscape(text)
+
 	ReratedIn := []model.RelatedIn{
 		{
-			ID:     "http://codh.rois.ac.jp/pmjt/book/200017283/",
+			ID:     baseUrl + "/s/" + textEncoded + "/manifest",
 			Format: "text/html",
 		},
 	}
 
 	MetadataIn := []model.MetadataIn{
 		{
-			Label: "DC.subject",
-			Value: "",
-		},
-		{
-			Label: "DC.identifier",
-			Value: "200017283",
-		},
-		{
-			Label: "巻之一～七",
-			Value: "volume",
+			Label: "Search term",
+			Value: text,
 		},
 		{
 			Label: "DCTERMS.alternative",
@@ -49,30 +49,32 @@ func GetIiif(c *gin.Context) {
 		var he int
 		he, _ = strconv.Atoi(i.Height)
 
+		picPath := strings.Replace(i.Pic_no, ".bmp", "", -1)
+
 		canvase := model.CanvasesIn{
 			Type:   "sc:Canvas",
 			Label:  i.Persons_name + "_" + i.Historical_materials,
 			Width:  wi,
 			Height: he,
-			ID:     "http://codh.rois.ac.jp/pmjt/iiif/200017283/canvas/00001",
+			ID:     baseUrl + "/i/" + textEncoded + "/canvas/" + i.Id,
 			Images: []model.CanvasesImagesIn{
 				{
-					ID:         "http://hoge.ac.jp/" + i.Pic_path,
+					ID:         baseUrl + "/d/" + picPath,
 					Motivation: "sc:painting",
 					Resource: model.CanvasesImagesResourceIn{
-						ID:     "http://hoge.ac.jp/" + i.Pic_path,
-						Format: "image/bmp",
+						ID:     baseUrl + "/d/" + picPath,
+						Format: "image/jpg",
 						Type:   "oa:Annotation",
 						Height: he,
 						Service: model.CanvasesImagesResourceServiceIn{
-							ID:      "http://codh.rois.ac.jp/pmjt/iiif/200017283/200017283_00002.tif",
+							ID:      baseUrl + "/i/" + textEncoded + "/200017283_00002.tif",
 							Context: "http://iiif.io/api/image/2/context.json",
 							Profile: "http://iiif.io/api/image/2/level2.json",
 						},
 						Width: wi,
 					},
 					Type: "oa:Annotation",
-					On:   "http://hoge.ac.jp/" + i.Pic_path,
+					On:   baseUrl + "/d/" + picPath,
 				},
 			},
 		}
@@ -82,24 +84,24 @@ func GetIiif(c *gin.Context) {
 	SequencesIn := []model.SequencesIn{
 		{
 			Canvases: canvaseList,
-			ID:       "http://codh.rois.ac.jp/pmjt/iiif/200017283/sequence/all",
+			ID:       baseUrl + "/i/" + textEncoded + "/sequence/all",
 			Type:     "sc:Sequence",
-			Label:    "ページ一覧",
+			Label:    text + "の検索結果",
 		},
 	}
 
 	res := model.Manifest{
 		Related:     ReratedIn,
 		Attribution: "<span>花押彙纂画像データ</span>",
-		Within:      "http://codh.rois.ac.jp/pmjt/book/",
+		Within:      baseUrl + "/s/",
 		Context:     "http://iiif.io/api/presentation/2/context.json",
-		ID:          "http://codh.rois.ac.jp/pmjt/book/200017283/manifest",
+		ID:          baseUrl + "/s/",
 		License:     "http://creativecommons.org/licenses/by-sa/4.0/",
 		Thumbnail: model.ThumbnailIn{
-			ID: "http://codh.rois.ac.jp/pmjt/iiif/200017283/200017283_00001.tif",
+			ID: baseUrl + "/i/" + textEncoded + "/200017283_00001.tif",
 		},
 		Description:      "",
-		Logo:             "http://codh.rois.ac.jp/img/codh_logo_tiny.png",
+		Logo:             baseUrl + "/o/logo.png",
 		Label:            "花押彙纂",
 		Sequences:        SequencesIn,
 		Type:             "sc:Manifest",
